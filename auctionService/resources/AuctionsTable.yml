@@ -3,9 +3,26 @@ AuctionsTable:
       Properties:
         TableName: AuctionsTable-${self:provider.stage}
         BillingMode: PAY_PER_REQUEST
+        # Defining attributes on AuctionsTable Schema
         AttributeDefinitions: 
           - AttributeName: id
             AttributeType: S
+          - AttributeName: status
+            AttributeType: S
+          - AttributeName: endingAt
+            AttributeType: S
+        # Primary partition key (HASH means that is partition key)
         KeySchema:
           - AttributeName: id
             KeyType: HASH
+        GlobalSecondaryIndexes:
+          # statusAndEndDate GSI
+          - IndexName: statusAndEndDate
+            KeySchema:
+              # status is partition key, endingAt is sort key
+              - AttributeName: status
+                KeyType: HASH
+              - AttributeName: endingAt
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL

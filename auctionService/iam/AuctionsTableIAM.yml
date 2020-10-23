@@ -1,9 +1,15 @@
 AuctionsTableIAM:
   Effect: Allow
   Action: 
+    # permissions for this iam role to access the dynamodb table
     - dynamodb:PutItem
     - dynamodb:Scan
     - dynamodb:GetItem
     - dynamodb:UpdateItem
+    - dynamodb:Query
   Resource:
+    # dynamic arn for AuctionsTable primary key
     - ${self:custom.AuctionsTable.arn}
+    # dynamic arn for GSI on AuctionsTable
+    # ${self:custom.AuctionsTable.arn}/index/statusAndEndDate
+    - !Join ['/', [ '${self:custom.AuctionsTable.arn}', 'index', 'statusAndEndDate' ]]
